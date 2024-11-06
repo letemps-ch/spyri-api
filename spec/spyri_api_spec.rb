@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Spyri::Api do
+RSpec.describe SpyriApi do
   it "has a version number" do
-    expect(Spyri::Api::VERSION).not_to be nil
+    expect(SpyriApi::VERSION).not_to be nil
   end
 
   it "does something useful" do
