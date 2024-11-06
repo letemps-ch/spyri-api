@@ -10,7 +10,6 @@ Just excute:
 
     $ bundle add 'spyri-api'
 
-
 ### Manually
 
 Add this line to your application's Gemfile:
