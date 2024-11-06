@@ -32,8 +32,6 @@ Or install it yourself as:
 ### Quickstart
 
 ```ruby
-require 'MailchimpMarketing'
-
 begin
   client = SpyriApi::Client.new
   client.set_config({
