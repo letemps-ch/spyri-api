@@ -4,6 +4,7 @@ module SpyriApi
   class Invoices
 
     BASEPATH = '/invoices'.freeze
+    SEARCHABLE_ATTRIBUTES = [:code, :subscription_id, :user_id].freeze
 
     attr_accessor :api_client
 
@@ -13,18 +14,16 @@ module SpyriApi
 
     def search(opts = {})
       query_params = {}
-      [:code, :subscription_id, :user_id].each do |key|
-        query_params[key.to_s] = opts[key] if !opts[key].blank?
+      SEARCHABLE_ATTRIBUTES.each do |key|
+        query_params[key.to_s] = opts[key] if !opts[key].nil?
       end
       path = BASEPATH
-      data = @api_client.call_api(:GET, path, query_params: query_params)
-      return data
+      @api_client.call_api(:GET, path, query_params: query_params)
     end
 
     def get(id)
       path = "#{BASEPATH}/#{id}"
-      data = @api_client.call_api(:GET, path)
-      return data
+      @api_client.call_api(:GET, path)
     end
 
   end
