@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/spyri/api/version"
+require_relative "lib/spyri_api/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "spyri-api"
@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["pierreandre.boissinot@noesya.coop"]
 
   spec.summary       = "Ruby client library for the Spyri API"
-  spec.homepage      = "Thttps://github.com/letemps-ch/spyri-api"
+  spec.homepage      = "https://github.com/letemps-ch/spyri-api"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
