@@ -31,5 +31,15 @@ module SpyriApi
       @api_client.call_api(:POST, path, body: { subscription: subscription_object })
     end
 
+    def update(id, subscription_object)
+      path = "#{BASEPATH}/#{id}"
+      @api_client.call_api(:PATCH, path, body: { subscription: subscription_object })
+    end
+
+    def terminate(id)
+      path = "#{BASEPATH}/#{id}/terminate"
+      @api_client.call_api(:PATCH, path)
+    end
+
   end
 end
