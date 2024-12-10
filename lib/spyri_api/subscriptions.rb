@@ -4,7 +4,7 @@ module SpyriApi
   class Subscriptions
 
     BASEPATH = '/subscriptions'.freeze
-    SEARCHABLE_ATTRIBUTES = [:erp_id].freeze
+    SEARCHABLE_ATTRIBUTES = [:erp_id, :user_id].freeze
 
     attr_accessor :api_client
 
