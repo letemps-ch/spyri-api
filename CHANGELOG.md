@@ -1,3 +1,7 @@
+## [0.1.4] - 2025-07-04
+
+- Add users endpoint
+
 ## [0.1.2] - 2024-12-04
 
 - Add update and terminate methods to subscriptions
