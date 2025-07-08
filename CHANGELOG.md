@@ -1,6 +1,10 @@
+## [0.1.6] - 2025-07-08
+
+- Add modules & definitions endpoints
+
 ## [0.1.4] - 2025-07-04
 
-- Add users endpoint
+- Add articles endpoint
 
 ## [0.1.2] - 2024-12-04
 
