@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
+require "json"
+require "openssl"
+require "uri"
+
 module SpyriApi
   class Client
+
+    SIGNATURE_SCHEME = "HMAC-SHA256"
 
     def initialize(config = {})
       set_config(config)
@@ -9,6 +15,9 @@ module SpyriApi
 
     def set_config(config = {})
       @access_token = config[:access_token] || ''
+      # HMAC credentials: when both are given, requests are signed and the access token is not used
+      @key_id = config[:key_id]
+      @secret = config[:secret]
       @host = config[:host] || ''
 
       timeout = config[:timeout] || 120
@@ -18,17 +27,24 @@ module SpyriApi
     end
 
     def call_api(http_method, path, opts = {})
-      headers = {'Content-Type' => "application/json"}
-      headers[:Authorization] = "Bearer #{@access_token}"
+      method = http_method.to_s.upcase
+      # The query string is built here rather than by Excon, so that the signed path is exactly the one sent
+      url = @host + path
+      query = URI.encode_www_form(opts[:query_params] || {})
+      url += "?#{query}" unless query.empty?
+      body = method == "GET" ? "" : opts[:body].to_json
 
-      conn = Excon.new(@host + path, headers: headers, read_timeout: @read_timeout, write_timeout: @write_timeout, connect_timeout: @connect_timeout)
+      headers = {'Content-Type' => "application/json"}
+      headers.merge!(authentication_headers(method, URI(url).request_uri, body))
+
+      conn = Excon.new(url, headers: headers, read_timeout: @read_timeout, write_timeout: @write_timeout, connect_timeout: @connect_timeout)
 
       res = nil
-      case http_method.to_sym.downcase
-      when :post, :put, :patch, :delete
-        res = conn.request(method: http_method, query: opts[:query_params], body: opts[:body].to_json)
-      when :get
-        res = conn.get(query: opts[:query_params])
+      case method
+      when "POST", "PUT", "PATCH", "DELETE"
+        res = conn.request(method: method, body: body)
+      when "GET"
+        res = conn.get
       end
 
       data = nil
@@ -39,6 +55,25 @@ module SpyriApi
       end
 
       return data
+    end
+
+    private
+
+    def hmac?
+      !@key_id.to_s.empty? && !@secret.to_s.empty?
+    end
+
+    def authentication_headers(method, request_uri, body)
+      # Legacy authentication: use Bearer token if HMAC credentials are not provided
+      return { 'Authorization' => "Bearer #{@access_token}" } unless hmac?
+
+      timestamp = Time.now.to_i.to_s
+      string_to_sign = [method, request_uri, timestamp, OpenSSL::Digest::SHA256.hexdigest(body)].join("\n")
+      {
+        'Authorization' => "#{SIGNATURE_SCHEME} KeyId=#{@key_id}",
+        'X-API-Timestamp' => timestamp,
+        'X-API-Signature' => "sha256=#{OpenSSL::HMAC.hexdigest('SHA256', @secret, string_to_sign)}"
+      }
     end
 
   end

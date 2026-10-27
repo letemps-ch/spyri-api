@@ -30,11 +30,12 @@ Or install it yourself as:
 
 ### Quickstart
 
+Requests are signed with HMAC-SHA256:  
 ```ruby
 begin
-  client = SpyriApi::Client.new
-  client.set_config({
-    access_token: 'YOUR_SPYRI_API_TOKEN', 
+  client = SpyriApi::Client.new({
+    key_id: 'YOUR_KEY_ID',
+    secret: 'YOUR_SECRET',
     host: 'YOUR_SPYRI_API_URL'
   })
   users_endpoint = SpyriApi::Users.new(client)
