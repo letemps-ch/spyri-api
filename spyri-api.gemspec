@@ -28,6 +28,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "excon"
 
-  spec.post_install_message = "From version 0.2.0, signature is made using a key_id and a secret, instead of the previous token (the token still works as a fallback)"
+  spec.post_install_message = "From version 0.2.0, signature is made using an access_uuid and a secret, instead of the previous token (the token still works as a fallback)"
 
 end

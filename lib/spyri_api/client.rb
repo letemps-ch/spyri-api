@@ -16,7 +16,7 @@ module SpyriApi
     def set_config(config = {})
       @access_token = config[:access_token] || ''
       # HMAC credentials: when both are given, requests are signed and the access token is not used
-      @key_id = config[:key_id]
+      @access_uuid = config[:access_uuid]
       @secret = config[:secret]
       @host = config[:host] || ''
 
@@ -60,7 +60,7 @@ module SpyriApi
     private
 
     def hmac?
-      !@key_id.to_s.empty? && !@secret.to_s.empty?
+      !@access_uuid.to_s.empty? && !@secret.to_s.empty?
     end
 
     def authentication_headers(method, request_uri, body)
@@ -69,11 +69,8 @@ module SpyriApi
 
       timestamp = Time.now.to_i.to_s
       string_to_sign = [method, request_uri, timestamp, OpenSSL::Digest::SHA256.hexdigest(body)].join("\n")
-      {
-        'Authorization' => "#{SIGNATURE_SCHEME} KeyId=#{@key_id}",
-        'X-API-Timestamp' => timestamp,
-        'X-API-Signature' => "sha256=#{OpenSSL::HMAC.hexdigest('SHA256', @secret, string_to_sign)}"
-      }
+      signature = OpenSSL::HMAC.hexdigest('SHA256', @secret, string_to_sign)
+      { 'Authorization' => "#{SIGNATURE_SCHEME} access_uuid=#{@access_uuid};time=#{timestamp};signature=#{signature}" }
     end
 
   end

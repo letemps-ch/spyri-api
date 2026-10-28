@@ -1,6 +1,6 @@
 ## [0.2.0] - 2026-10-27
 
-- Sign requests with HMAC-SHA256 when `key_id` and `secret` are configured (bearer `access_token` still supported)
+- Sign requests with HMAC-SHA256 when `access_uuid` and `secret` are configured (bearer `access_token` still supported)
 - Build the query string in the client instead of Excon, so that the signed path is the one sent
 
 ## [0.1.6] - 2025-07-08
